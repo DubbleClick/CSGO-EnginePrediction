@@ -2,6 +2,14 @@
 
 void CPredictionSystem::StartPrediction() {
 
+	static bool bInit = false;
+	if (!bInit) {
+		m_pPredictionRandomSeed = *(int**)(Util::FindPattern("client.dll", "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04") + 2);
+		bInit = true;
+	}
+
+	*m_pPredictionRandomSeed = g_pUserCmd->random_seed;
+
 	m_flOldCurtime = g_pGlobals->curtime;
 	m_flOldFrametime = g_pGlobals->frametime;
 
@@ -22,6 +30,8 @@ void CPredictionSystem::EndPrediction() {
 
 	g_pGameMovement->FinishTrackPredictionErrors(g_pLocalPlayer);
 	g_pMoveHelper->SetHost(0);
+
+	*m_pPredictionRandomSeed = -1;
 
 	g_pGlobals->curtime = m_flOldCurtime;
 	g_pGlobals->frametime = m_flOldFrametime;
