@@ -77,5 +77,11 @@
     <ClInclude Include="Util.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hacks.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineTrace.hpp">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

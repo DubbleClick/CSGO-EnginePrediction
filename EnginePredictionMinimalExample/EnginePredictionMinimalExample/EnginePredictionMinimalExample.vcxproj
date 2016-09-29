@@ -155,8 +155,10 @@
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="ClientEntityList.hpp" />
     <ClInclude Include="EngineClient.hpp" />
+    <ClInclude Include="EngineTrace.hpp" />
     <ClInclude Include="GameMovement.hpp" />
     <ClInclude Include="GlobalVarBase.hpp" />
+    <ClInclude Include="Hacks.hpp" />
     <ClInclude Include="Hooks.hpp" />
     <ClInclude Include="MoveData.hpp" />
     <ClInclude Include="MoveHelper.hpp" />

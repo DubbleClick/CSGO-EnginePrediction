@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Vector.hpp"
+#include "EngineTrace.hpp"
 #include "MoveData.hpp"
 #include "BaseEntity.hpp"
 #include "UserCmd.hpp"
@@ -18,5 +19,4 @@
 #include "util.hpp"
 #include "Hooks.hpp"
 #include "PredictionSystem.hpp"
-
-#define IN_ATTACK (1<<0)
+#include "Hacks.hpp"

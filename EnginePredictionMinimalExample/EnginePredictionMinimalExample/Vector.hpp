@@ -10,6 +10,9 @@ public:
 	float& operator[](int i);
 	inline void Zero();
 	Vector& Clamp();
+	float LengthSqr() {
+		return (x*x + y*y + z*z);
+	}
 	bool operator==(const Vector& v) const;
 	bool operator!=(const Vector& v) const;
 	__forceinline Vector&	operator+=(const Vector &v);

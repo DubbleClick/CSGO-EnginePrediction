@@ -7,9 +7,12 @@ CGlobalVarsBase* g_pGlobals;
 CBaseEntity* g_pLocalPlayer;
 IClientEntityList* g_pClientEntityList;
 IEngineClient* g_pEngineClient;
+IEngineTrace* g_pEngineTrace;
 IGameMovement* g_pGameMovement;
 IMoveHelper* g_pMoveHelper;
 IPrediction* g_pPrediction;
+
+uintptr_t g_dwGlowObject;
 
 std::unique_ptr<VMT::VMTManager> ClientModeVMTManager;
 HMODULE DllModule;
@@ -20,9 +23,12 @@ BOOL WINAPI Initialize() {
 	g_pGlobals = **(CGlobalVarsBase***)((*(uintptr_t**)Client)[0] + 0x53);
 	g_pClientEntityList = Util::CreateInterface<IClientEntityList*>("client.dll", "VClientEntityList003");
 	g_pEngineClient = Util::CreateInterface<IEngineClient*>("engine.dll", "VEngineClient014");
+	g_pEngineTrace = Util::CreateInterface<IEngineTrace*>("engine.dll", "EngineTraceClient004");
 	g_pGameMovement = Util::CreateInterface<IGameMovement*>("client.dll", "GameMovement001");
 	g_pPrediction = Util::CreateInterface<IPrediction*>("client.dll", "VClientPrediction001");
 	g_pMoveHelper = **(IMoveHelper***)(Util::FindPattern("client.dll", "8B 0D ? ? ? ? 8B 46 08 68") + 2);
+
+	g_dwGlowObject = *(uintptr_t*)(Util::FindPattern("client.dll", "A1 ? ? ? ? A8 01 75 4E 0F 57 C0") + 0x58);
 
 	ClientModeVMTManager = std::make_unique<VMT::VMTManager>(ClientMode);
 	ClientModeVMTManager->HookMethod(Hooks::CreateMove, 24);

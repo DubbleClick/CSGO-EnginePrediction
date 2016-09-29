@@ -8,31 +8,24 @@ bool __stdcall Hooks::CreateMove(float flInputSampleTime, CUserCmd* cmd) {
 	g_pUserCmd = cmd;
 
 	static std::unique_ptr<CPredictionSystem> PredictionSystem = std::make_unique<CPredictionSystem>();
+	static std::unique_ptr<CGlow>  Glow = std::make_unique<CGlow>();
+	static std::unique_ptr<CRCS>  RCS = std::make_unique<CRCS>();
+	static std::unique_ptr<CTrigger>  Trigger = std::make_unique<CTrigger>();
+	static std::unique_ptr<CBunnyHop>  BHop = std::make_unique<CBunnyHop>();
 
 	if (cmd->command_number == 0)
 		return ret;
 
+	Glow->Tick();
+	BHop->Tick();
+
 	PredictionSystem->StartPrediction();
 
-#pragma region shitrcs
-	static QAngle m_oldPunch;
-	static QAngle m_oldView = g_pUserCmd->viewangles;
-	static bool bReset = false;
-	if ((g_pUserCmd->buttons & IN_ATTACK) && g_pLocalPlayer->GetShotsFired() > 0) {
-		QAngle m_curPunch = g_pLocalPlayer->GetPunchAngles() * 2.f;
-		g_pUserCmd->viewangles += (m_oldPunch - m_curPunch);
-		m_oldPunch = m_curPunch;
-		bReset = true;
-	}
-	else {
-		if (bReset) {
-			g_pUserCmd->viewangles = m_oldView;
-			bReset = false;
-		}
-		m_oldView = g_pUserCmd->viewangles;
-		m_oldPunch.x = m_oldPunch.y = m_oldPunch.z = 0;
-	}
-#pragma endregion
+	if (GetAsyncKeyState(VK_XBUTTON1))
+		Trigger->Tick();
+
+	if (GetAsyncKeyState(VK_XBUTTON2))
+		RCS->Tick();
 
 	PredictionSystem->EndPrediction();
 
