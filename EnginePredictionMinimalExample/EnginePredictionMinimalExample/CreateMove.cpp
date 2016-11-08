@@ -7,27 +7,30 @@ bool __stdcall Hooks::CreateMove(float flInputSampleTime, CUserCmd* cmd) {
 	g_pLocalPlayer = g_pClientEntityList->GetClientEntity(g_pEngineClient->GetLocalPlayer());
 	g_pUserCmd = cmd;
 
-	static std::unique_ptr<CPredictionSystem> PredictionSystem = std::make_unique<CPredictionSystem>();
-	static std::unique_ptr<CGlow>  Glow = std::make_unique<CGlow>();
-	static std::unique_ptr<CRCS>  RCS = std::make_unique<CRCS>();
-	static std::unique_ptr<CTrigger>  Trigger = std::make_unique<CTrigger>();
-	static std::unique_ptr<CBunnyHop>  BHop = std::make_unique<CBunnyHop>();
+	static CPredictionSystem PredictionSystem;
+	static CGlow  Glow;
+	static CRCS RCS;
+	static CTrigger Trigger;
+	static CBunnyHop Bhop;
+	static CAimbot Aimbot;
 
 	if (cmd->command_number == 0)
 		return ret;
 
-	Glow->Tick();
-	BHop->Tick();
+	Glow.Tick();
+	Bhop.Tick();
 
-	PredictionSystem->StartPrediction();
+	PredictionSystem.StartPrediction();
 
 	if (GetAsyncKeyState(VK_XBUTTON1))
-		Trigger->Tick();
+		Trigger.Tick();
 
 	if (GetAsyncKeyState(VK_XBUTTON2))
-		RCS->Tick();
+		Aimbot.Tick();
+	else if (GetAsyncKeyState(VK_MBUTTON))
+		RCS.Tick();
 
-	PredictionSystem->EndPrediction();
+	PredictionSystem.EndPrediction();
 
 	g_pUserCmd->viewangles.Clamp();
 

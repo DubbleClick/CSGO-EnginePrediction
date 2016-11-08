@@ -1,5 +1,9 @@
 #pragma once
 
+struct matrix3x4_t {
+	float flMatrix[3][4];
+};
+
 class Vector {
 public:
 	float x, y, z;
@@ -30,9 +34,46 @@ public:
 	Vector	operator/(const Vector& v) const;
 	Vector	operator*(float fl) const;
 	Vector	operator/(float fl) const;
+
+	float Length2D(void) const;
+	float Length(void) const;
+	Vector Normalize(void);
+	float Dot(const Vector& vOther) const;
 };
 
 using QAngle = Vector;
+
+inline float Vector::Dot(const Vector& vOther) const {
+	const Vector& a = *this;
+	return(a.x*vOther.x + a.y*vOther.y + a.z*vOther.z);
+}
+
+inline float Vector::Length(void) const {
+	float root = 0.0f;
+	float sqsr = x*x + y*y + z*z;
+	__asm sqrtss xmm0, sqsr
+	__asm movss root, xmm0
+	return root;
+}
+
+inline float Vector::Length2D(void) const {
+	float root = 0.0f;
+	float sqst = x*x + y*y;
+	__asm sqrtss xmm0, sqst
+	__asm movss root, xmm0
+	return root;
+}
+
+inline Vector Vector::Normalize(void) {
+	float length = this->Length();
+	if (!length)
+		return *this;
+	this->x /= length;
+	this->y /= length;
+	this->z /= length;
+
+	return *this;
+}
 
 inline QAngle& QAngle::Clamp() {
 

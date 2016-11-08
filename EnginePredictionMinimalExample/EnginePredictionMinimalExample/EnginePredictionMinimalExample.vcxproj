@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="CreateMove.cpp" />
     <ClCompile Include="EnginePredictionMinimalExample.cpp" />
+    <ClCompile Include="Hacks.cpp" />
     <ClCompile Include="PredictionSystem.cpp" />
     <ClCompile Include="vmt.cpp" />
   </ItemGroup>

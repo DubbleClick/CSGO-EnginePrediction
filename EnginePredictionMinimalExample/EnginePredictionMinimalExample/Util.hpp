@@ -68,4 +68,35 @@ namespace Math
 		vec.y = cp*sy;
 		vec.z = -sp;
 	}
+
+	inline void VectorAngles(const Vector& forward, QAngle& angles) {
+		if (forward[1] == 0.0f && forward[0] == 0.0f) {
+			angles[0] = (forward[2] > 0.0f) ? 270.0f : 90.0f; // Pitch (up/down)
+			angles[1] = 0.0f;  //yaw left/right
+		}
+		else {
+			angles[0] = atan2(-forward[2], forward.Length2D()) * -180 / M_PI;
+			angles[1] = atan2(forward[1], forward[0]) * 180 / M_PI;
+
+			if (angles[1] > 90) angles[1] -= 180;
+			else if (angles[1] < 90) angles[1] += 180;
+			else if (angles[1] == 90) angles[1] = 0;
+		}
+		angles[2] = 0.0f;
+	}
+
+	inline QAngle CalcAngle(Vector src, Vector dst) {
+		QAngle angles;
+		Vector delta = src - dst;
+		delta.Normalize();
+		VectorAngles(delta, angles);
+		return angles;
+	}
+
+	inline float GetFov(const QAngle& viewAngle, const QAngle& aimAngle) {
+		Vector ang, aim;
+		AngleVectors(viewAngle, aim);
+		AngleVectors(aimAngle, ang);
+		return RAD2DEG(acos(aim.Dot(ang) / aim.LengthSqr()));
+	}
 }

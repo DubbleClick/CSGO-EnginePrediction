@@ -76,82 +76,16 @@ class CTrigger {
 public: void Tick();
 };
 
-//function defs
+class CAimbot {
+public:
+	void Tick();
 
-inline void CBunnyHop::Tick() {
-	if (g_pUserCmd->buttons & IN_JUMP) {
-		if (!(g_pLocalPlayer->GetFlags() & FL_ONGROUND))
-			g_pUserCmd->buttons &= ~IN_JUMP;
-	}
-}
+private:
+	CBaseEntity* GetTargetByFov();
+	bool IsVisible(CBaseEntity* ent);
 
-inline void CTrigger::Tick() {
-	Vector src, dst, forward;
-	trace_t tr;
-	Ray_t ray;
-	ITraceFilter filter;
-	filter.pSkip = g_pLocalPlayer;
-
-	QAngle viewangle = g_pUserCmd->viewangles;
-
-	viewangle += g_pLocalPlayer->GetPunchAngles() * 2.f;
-
-	Math::AngleVectors(viewangle, forward);
-	forward *= 8012.f;
-	filter.pSkip = g_pLocalPlayer;
-	src = g_pLocalPlayer->GetEyePosition();
-	dst = src + forward;
-
-	ray.Init(src, dst);
-
-	g_pEngineTrace->TraceRay(ray, 0x46004003, &filter, &tr);
-
-	if (!tr.m_pEnt)
-		return;
-
-	if (tr.m_pEnt->GetTeam() != 0 && tr.m_pEnt->GetTeam() != g_pLocalPlayer->GetTeam())
-		g_pUserCmd->buttons &= IN_ATTACK;
-}
-
-inline void CRCS::Tick() {
-	if ((g_pUserCmd->buttons & IN_ATTACK) && g_pLocalPlayer->GetShotsFired() > 0) {
-		QAngle m_curPunch = g_pLocalPlayer->GetPunchAngles() * 2.f;
-		g_pUserCmd->viewangles += (m_oldPunch - m_curPunch);
-		m_oldPunch = m_curPunch;
-		bReset = true;
-	}
-	else {
-		if (bReset) {
-			g_pUserCmd->viewangles = m_oldView;
-			bReset = false;
-		}
-		m_oldView = g_pUserCmd->viewangles;
-		m_oldPunch.x = m_oldPunch.y = m_oldPunch.z = 0;
-	}
-}
-
-inline void CGlow::GlowEntity(int index, Color clr) {
-	static uintptr_t dwClient = (uintptr_t)GetModuleHandleA("client.dll");
-	GlowStruct_t* GlowObjectArray = *(GlowStruct_t**)(dwClient + g_dwGlowObject);
-	if (GlowObjectArray) {
-		GlowStruct_t* GlowObject = &GlowObjectArray[index];
-
-		if (GlowObject) {
-			GlowObject->m_vGlowColor = clr.ToVector();
-			GlowObject->m_flGlowAlpha = clr.GetAlphaFloat();
-			GlowObject->m_bRenderWhenOccluded = true;
-			GlowObject->m_bRenderWhenUnoccluded = false;
-		}
-	}
-}
-
-inline void CGlow::Tick() {
-	for (int i = 0; i < 64; i++) {
-		CBaseEntity* Entity = g_pClientEntityList->GetClientEntity(i);
-		if (!Entity || Entity->GetDormant() || !Entity->GetHealth())
-			return;
-
-		Color clr = Entity->GetTeam() == g_pLocalPlayer->GetTeam() ? Color(255, 0, 255, 150) : Color(255, 255, 0, 255);
-		GlowEntity(Entity->GetGlowIndex(), clr);
-	}
-}
+	float m_flSpeed = 5.f;
+	float m_flFoV = 5.f;
+	int m_iBone;
+	float curAimTime, deltaTime;
+};
