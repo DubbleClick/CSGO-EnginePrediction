@@ -8,25 +8,22 @@ void CBunnyHop::Tick() {
 }
 
 void CTrigger::Tick() {
-	Vector src, dst, forward;
+	Vector forward;
 	trace_t tr;
 	Ray_t ray;
 	ITraceFilter filter;
 	filter.pSkip = g_pLocalPlayer;
 
 	QAngle viewangle = g_pUserCmd->viewangles;
-
 	viewangle += g_pLocalPlayer->GetPunchAngles() * 2.f;
 
 	Math::AngleVectors(viewangle, forward);
-	forward *= 8012.f;
-	filter.pSkip = g_pLocalPlayer;
-	src = g_pLocalPlayer->GetEyePosition();
-	dst = src + forward;
 
-	ray.Init(src, dst);
+	ray.Init(g_pLocalPlayer->GetEyePosition(), g_pLocalPlayer->GetEyePosition() + (forward * 8012.f));
 
-	g_pEngineTrace->TraceRay(ray, 0x46004003, &filter, &tr);
+	constexpr const unsigned int MASK_SHOT = 0x46004003;
+
+	g_pEngineTrace->TraceRay(ray, MASK_SHOT, &filter, &tr);
 
 	if (!tr.m_pEnt)
 		return;

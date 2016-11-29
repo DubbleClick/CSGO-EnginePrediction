@@ -34,9 +34,10 @@ BOOL WINAPI Initialize() {
 	ClientModeVMTManager->HookMethod(Hooks::CreateMove, 24);
 	oCreateMove = ClientModeVMTManager->GetMethod<CreateMoveFn>(24);
 
-	while (!GetAsyncKeyState(VK_END))
+	while (!(GetAsyncKeyState(VK_END) & 0x8000))
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
+	ClientModeVMTManager->Unhook();
 	FreeLibraryAndExitThread(DllModule, EXIT_SUCCESS);
 
 	return TRUE;

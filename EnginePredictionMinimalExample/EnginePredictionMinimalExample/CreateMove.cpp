@@ -3,19 +3,18 @@
 
 CreateMoveFn oCreateMove = nullptr;
 bool __stdcall Hooks::CreateMove(float flInputSampleTime, CUserCmd* cmd) {
-	bool ret = oCreateMove(flInputSampleTime, cmd);
 	g_pLocalPlayer = g_pClientEntityList->GetClientEntity(g_pEngineClient->GetLocalPlayer());
 	g_pUserCmd = cmd;
 
 	static CPredictionSystem PredictionSystem;
-	static CGlow  Glow;
+	static CGlow Glow;
 	static CRCS RCS;
 	static CTrigger Trigger;
 	static CBunnyHop Bhop;
 	static CAimbot Aimbot;
 
 	if (cmd->command_number == 0)
-		return ret;
+		return false;
 
 	Glow.Tick();
 	Bhop.Tick();
@@ -34,5 +33,6 @@ bool __stdcall Hooks::CreateMove(float flInputSampleTime, CUserCmd* cmd) {
 
 	g_pUserCmd->viewangles.Clamp();
 
-	return ret;
+	g_pEngineClient->SetViewAngles(cmd->viewangles);
+	return false;
 }

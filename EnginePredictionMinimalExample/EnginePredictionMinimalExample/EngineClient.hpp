@@ -15,6 +15,11 @@ public:
 	virtual void VirtualFunction10() = 0;
 	virtual void VirtualFunction11() = 0;
 	virtual int  GetLocalPlayer() = 0;
+
+	void SetViewAngles(QAngle& angles) {
+		typedef void(__thiscall* T)(void*, QAngle&);
+		(*reinterpret_cast<T**>(this))[19](this, angles);
+	}
 };
 
 extern IEngineClient* g_pEngineClient;

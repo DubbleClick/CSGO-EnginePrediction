@@ -73,7 +73,8 @@ private:
 };
 
 class CTrigger {
-public: void Tick();
+public:
+	void Tick();
 };
 
 class CAimbot {
@@ -86,6 +87,6 @@ private:
 
 	float m_flSpeed = 5.f;
 	float m_flFoV = 5.f;
-	int m_iBone;
+	int m_iBone = 8;
 	float curAimTime, deltaTime;
 };
